@@ -1,0 +1,6 @@
+{
+  "ModId": 2205092350,
+  "Title": "Restart battle button",
+  "Description": "Adds a button to the battle screen that starts the battle over from the beginning.",
+  "CosmeticOnly": true
+}
