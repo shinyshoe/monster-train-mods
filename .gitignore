@@ -27,3 +27,4 @@ ExportedObj/
 
 # mods
 Mods/*/bin
+Mods/*/libs/*.dll
