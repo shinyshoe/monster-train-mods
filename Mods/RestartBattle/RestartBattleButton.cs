@@ -55,6 +55,7 @@ namespace RestartBattle
             string sharecode = Traverse.Create(saveManager).Field("activeSharecode").GetValue<string>();
 
             // Return to the main menu
+            // Note: Copied from PauseDialog.ReturnToMainMenu()
             gameStateManager.LeaveGame();
             screenManager.ReturnToMainMenu();
             cardStatistics.ResetAllStats();
@@ -94,8 +95,7 @@ namespace RestartBattle
             buttonRoot.name = "RestartBattleButton";
 
             // Delete unwanted game objects and components
-            List<GameObject> toDelete = new List<GameObject>();
-            DeleteUnwanted(buttonRoot, "", toDelete);
+            DeleteUnwanted(buttonRoot);
 
             // Set position to in the corner next to the ember
             RectTransform transRoot = buttonRoot.transform as RectTransform;
@@ -109,7 +109,7 @@ namespace RestartBattle
                 Mathf.LerpUnclamped(deckUI.transform.position.y, energyUI.transform.position.y, -0.1f),
                 buttonRoot.transform.position.z);
 
-            // Make it a bit smaller than the "End Turn" button 0.6
+            // Make it a bit smaller than the "End Turn" button
             buttonRoot.transform.localScale = new Vector3(.6f, .6f, buttonRoot.transform.localScale.z);
 
             // Clear shortcut key so "End Turn" keyboard shortcut doesn't trigger restart battle
