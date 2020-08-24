@@ -1,0 +1,7 @@
+The libs that should be here for it to compile:
+0Harmony.dll
+Assembly-CSharp.dll
+BepInEx.dll
+BepInEx.Harmony.dll
+UnityEngine.CoreModule.dll
+UnityEngine.dll
