@@ -1,5 +1,8 @@
 ﻿using BepInEx;
 using HarmonyLib;
+using ShinyShoe;
+using UnityEngine;
+using System.Collections.Generic;
 
 namespace OnlyStewards
 {
@@ -19,7 +22,7 @@ namespace OnlyStewards
     {
         static void Postfix(ref string __result)
         {
-            if (__result == "Train Steward") __result = "Only Friend";
+            if (__result == "Train Steward") __result = "Shiny Steward";
         }
     }
 
@@ -29,7 +32,27 @@ namespace OnlyStewards
     {
         static void Postfix(ref string __result)
         {
-            if (__result == "Train Steward") __result = "Only Friend";
+            if (__result == "Train Steward") __result = "Shiny Steward";
+        }
+    }
+
+    [HarmonyPatch(typeof(CharacterUI))]
+    [HarmonyPatch("Setup")]
+    public static class Mod_CharacterUI_Setup
+    {
+        static void Postfix(ref string __debugName, ref CharacterUIMeshBase __characterMesh, ref Transform __googlyEyes, ref CharacterState __characterState, ref Vector3 __googlyEyesOffset, ref int __googlyEyesSortingOrderTweak)
+        {
+            if (__debugName.StartsWith("Character_TrainSteward"))
+            {
+                (__characterMesh as CharacterUIMeshSpine).OrNull()?.AttachToBone(__googlyEyes, VfxAtLoc.Location.BoneStatusEffectSlot1);
+                foreach (var googlyEye in __googlyEyes.GetComponentsInChildren<GooglyEyes>())
+                {
+                    googlyEye.SetGravityBias(__characterState.GetTeamType());
+                    googlyEye.BringLayersForward(__googlyEyesOffset, __googlyEyesSortingOrderTweak);
+                }
+
+                __googlyEyes.gameObject.SetActive(true);
+            }
         }
     }
 }
