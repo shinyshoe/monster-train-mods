@@ -4,4 +4,5 @@ Assembly-CSharp.dll
 BepInEx.dll
 BepInEx.Harmony.dll
 UnityEngine.CoreModule.dll
+UnityEngine.ImageConversionModule.dll
 UnityEngine.dll
