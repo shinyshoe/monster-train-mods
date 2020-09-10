@@ -3,5 +3,8 @@ The libs that should be here for it to compile:
 Assembly-CSharp.dll
 BepInEx.dll
 BepInEx.Harmony.dll
+UnityEngine.AudioModule.dll
 UnityEngine.CoreModule.dll
 UnityEngine.dll
+UnityEngine.UnityWebRequestAudioModule.dll
+UnityEngine.UnityWebRequestModule.dll
