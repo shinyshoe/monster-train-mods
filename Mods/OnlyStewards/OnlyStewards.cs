@@ -9,12 +9,12 @@ namespace OnlyStewards
     [BepInPlugin("com.shinyshoe.onlystewards", "OnlyStewards", "1.0.0.0")]
     public class OnlyStewards : BaseUnityPlugin
     {
-        public static string SpriteFilePath;
+        public static string[] SpriteFilePaths;
 
         void Awake()
         {
-            var directory = Path.GetDirectoryName(Info.Location);
-            SpriteFilePath = Path.Combine(directory, "face.png");
+            var directory = Path.Combine(Path.GetDirectoryName(Info.Location), "images");
+            SpriteFilePaths = Directory.GetFiles(directory);
 
             var harmony = new Harmony("com.shinyshoe.onlystewards");
             harmony.PatchAll();
@@ -60,7 +60,9 @@ namespace OnlyStewards
         {
             GameObject go = new GameObject("Face");
             SpriteRenderer spriteRenderer = go.AddComponent<SpriteRenderer>();
-            spriteRenderer.sprite = LoadNewSprite(OnlyStewards.SpriteFilePath);
+
+            string path = OnlyStewards.SpriteFilePaths[RandomManager.Range(0, OnlyStewards.SpriteFilePaths.Length, RngId.NonDeterministic)];
+            spriteRenderer.sprite = LoadNewSprite(path);
             spriteRenderer.sortingOrder -= 1;
 
             return go;
