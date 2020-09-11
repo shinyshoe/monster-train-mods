@@ -51,8 +51,8 @@ namespace ShinyStewards
             {
                 GameObject faceTexture = CreateFaceObject();
                 (____characterMesh as CharacterUIMeshSpine).OrNull()?.AttachToBone(faceTexture.transform, VfxAtLoc.Location.BoneStatusEffectSlot1);
-                faceTexture.transform.localPosition += new Vector3(-.25f, -.6f);
-                faceTexture.transform.localScale = new Vector3(.5f, .5f);
+                faceTexture.transform.localPosition += new Vector3(-.4f, -.7f);
+                faceTexture.transform.localScale = new Vector3(.35f, .35f);
             }
         }
 
@@ -63,7 +63,7 @@ namespace ShinyStewards
 
             string path = ShinyStewards.SpriteFilePaths[RandomManager.Range(0, ShinyStewards.SpriteFilePaths.Length, RngId.NonDeterministic)];
             spriteRenderer.sprite = LoadNewSprite(path);
-            spriteRenderer.sortingOrder -= 1;
+            spriteRenderer.sortingOrder += 1;
 
             return go;
         }
