@@ -5,17 +5,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace OnlyStewards
+namespace TextReplacer
 {
-    [BepInPlugin("com.shinyshoe.textreplacer", "TextReplacer", "1.0.0.0")]
+    [BepInPlugin("com.shinyshoe.textreplacer", "Text Replacer", "1.0.0.0")]
     public class TextReplacer : BaseUnityPlugin
     {
+        private readonly string ReplacementFileName = "Replacements.csv";
+
         public static List<TextReplacement> Replacements;
 
         void Awake()
         {
             var directory = Path.GetDirectoryName(Info.Location);
-            var path = Path.Combine(directory, "Replacements.csv");
+            var path = Path.Combine(directory, ReplacementFileName);
             Replacements = File.ReadAllLines(path)
                 .Select(r => TextReplacement.FromCSV(r))
                 .ToList();

@@ -12,6 +12,10 @@ namespace HellHornedFriends
     [BepInPlugin("com.shinyshoe.mtsoap", "Trains of Our Lives", "1.0.0.0")]
     public class FriendNameChange : BaseUnityPlugin
     {
+        public static Dictionary<string, string> CueReplacements = new Dictionary<string, string>()
+        {
+            { SoundCueNames.StartGame, "test.wav" }
+        };
 
         public static List<SoundReplacement> Replacements;
 
@@ -26,7 +30,10 @@ namespace HellHornedFriends
         private IEnumerator PopulateSoundReplacements()
         {
             Replacements = new List<SoundReplacement>();
-            yield return CreateReplacementDefinition(SoundCueNames.StartGame, "test.wav");
+            foreach (KeyValuePair<string, string> kvp in CueReplacements)
+            {
+                yield return CreateReplacementDefinition(kvp.Key, kvp.Value);
+            }
         }
 
         private IEnumerator CreateReplacementDefinition(string cueName, string fileName)

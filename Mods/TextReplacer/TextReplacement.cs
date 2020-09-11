@@ -1,6 +1,4 @@
-﻿using System;
-
-public class TextReplacement
+﻿public class TextReplacement
 {
     public string sourceString;
     public string targetString;
