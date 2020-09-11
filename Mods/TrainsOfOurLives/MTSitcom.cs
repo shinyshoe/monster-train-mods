@@ -7,30 +7,25 @@ using UnityEngine;
 using ShinyShoe.Audio;
 using UnityEngine.Networking;
 
-namespace HellHornedFriends
+namespace TrainsOfOurLives
 {
-    [BepInPlugin("com.shinyshoe.mtsoap", "Trains of Our Lives", "1.0.0.0")]
-    public class FriendNameChange : BaseUnityPlugin
+    [BepInPlugin("com.shinyshoe.mtsitcom", "Trains of Our Lives", "1.0.0.0")]
+    public class MTSitcom : BaseUnityPlugin
     {
-        public static Dictionary<string, string> CueReplacements = new Dictionary<string, string>()
-        {
-            { SoundCueNames.StartGame, "test.wav" }
-        };
-
         public static List<SoundReplacement> Replacements;
 
         void Awake()
         {
             StartCoroutine(PopulateSoundReplacements());
 
-            var harmony = new Harmony("com.shinyshoe.mtsoap");
+            var harmony = new Harmony("com.shinyshoe.mtsitcom");
             harmony.PatchAll();
         }
 
         private IEnumerator PopulateSoundReplacements()
         {
             Replacements = new List<SoundReplacement>();
-            foreach (KeyValuePair<string, string> kvp in CueReplacements)
+            foreach (KeyValuePair<string, string> kvp in ReplacementData.CueReplacements)
             {
                 yield return CreateReplacementDefinition(kvp.Key, kvp.Value);
             }
@@ -60,7 +55,7 @@ namespace HellHornedFriends
 
     [HarmonyPatch(typeof(CoreAudioSystem))]
     [HarmonyPatch("GetSoundDefinition")]
-    public static class ChangeFriendCardName
+    public static class Mod_CoreAudioSystem_GetSoundDefinition
     {
         static void Postfix(ref CoreSoundEffectData.SoundCueDefinition __result, string cueName)
         {
@@ -73,7 +68,7 @@ namespace HellHornedFriends
 
         static SoundReplacement FindReplacement(string cueName)
         {
-            foreach(SoundReplacement replacement in FriendNameChange.Replacements)
+            foreach(SoundReplacement replacement in MTSitcom.Replacements)
             {
                 if (replacement.sourceCueName == cueName)
                 {
@@ -82,18 +77,6 @@ namespace HellHornedFriends
             }
 
             return null;
-        }
-    }
-
-    public class SoundReplacement
-    {
-        public string sourceCueName;
-        public CoreSoundEffectData.SoundCueDefinition replacementDefinition;
-
-        public SoundReplacement(string sourceCue, CoreSoundEffectData.SoundCueDefinition soundDefinition)
-        {
-            this.sourceCueName = sourceCue;
-            this.replacementDefinition = soundDefinition;
         }
     }
 }
