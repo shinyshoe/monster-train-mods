@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>OnlyStewards</AssemblyName>
+    <AssemblyName>ShinyStewards</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;.\deployment\plugins\$(TargetFileName)&quot;&#xD;&#xA;xcopy &quot;.\deployment&quot; &quot;C:\Program Files (x86)\Steam\steamapps\workshop\content\1102190\OnlyStewards&quot; /EY&#xD;&#xA;" />
+    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;.\deployment\plugins\$(TargetFileName)&quot;&#xD;&#xA;xcopy &quot;.\deployment&quot; &quot;C:\Program Files (x86)\Steam\steamapps\workshop\content\1102190\ShinyStewards&quot; /EY&#xD;&#xA;" />
   </Target>
 
 </Project>

@@ -4,10 +4,10 @@ using ShinyShoe;
 using UnityEngine;
 using System.IO;
 
-namespace OnlyStewards
+namespace ShinyStewards
 {
-    [BepInPlugin("com.shinyshoe.onlystewards", "OnlyStewards", "1.0.0.0")]
-    public class OnlyStewards : BaseUnityPlugin
+    [BepInPlugin("com.shinyshoe.shinystewards", "Shiny Stewards", "1.0.0.0")]
+    public class ShinyStewards : BaseUnityPlugin
     {
         public static string[] SpriteFilePaths;
 
@@ -16,7 +16,7 @@ namespace OnlyStewards
             var directory = Path.Combine(Path.GetDirectoryName(Info.Location), "images");
             SpriteFilePaths = Directory.GetFiles(directory);
 
-            var harmony = new Harmony("com.shinyshoe.onlystewards");
+            var harmony = new Harmony("com.shinyshoe.shinystewards");
             harmony.PatchAll();
         }
     }
@@ -56,45 +56,41 @@ namespace OnlyStewards
             }
         }
 
-        static GameObject CreateFaceObject()
+        private static GameObject CreateFaceObject()
         {
             GameObject go = new GameObject("Face");
             SpriteRenderer spriteRenderer = go.AddComponent<SpriteRenderer>();
 
-            string path = OnlyStewards.SpriteFilePaths[RandomManager.Range(0, OnlyStewards.SpriteFilePaths.Length, RngId.NonDeterministic)];
+            string path = ShinyStewards.SpriteFilePaths[RandomManager.Range(0, ShinyStewards.SpriteFilePaths.Length, RngId.NonDeterministic)];
             spriteRenderer.sprite = LoadNewSprite(path);
             spriteRenderer.sortingOrder -= 1;
 
             return go;
         }
 
-        static Sprite LoadNewSprite(string FilePath, float PixelsPerUnit = 100.0f)
+        private static Sprite LoadNewSprite(string FilePath, float PixelsPerUnit = 100.0f)
         {
-            // Load a PNG or JPG image from disk to a Texture2D, assign this texture to a new sprite and return its reference
             Texture2D SpriteTexture = LoadTexture(FilePath);
             Sprite NewSprite = Sprite.Create(SpriteTexture, new Rect(0, 0, SpriteTexture.width, SpriteTexture.height), new Vector2(0, 0), PixelsPerUnit);
 
             return NewSprite;
         }
 
-        public static Texture2D LoadTexture(string FilePath)
+        private static Texture2D LoadTexture(string filePath)
         {
+            Texture2D texture;
+            byte[] data;
 
-            // Load a PNG or JPG file from disk to a Texture2D
-            // Returns null if load fails
-
-            Texture2D Tex2D;
-            byte[] FileData;
-
-            if (File.Exists(FilePath))
+            if (File.Exists(filePath))
             {
-                FileData = File.ReadAllBytes(FilePath);
-                Tex2D = new Texture2D(2, 2);      
-                Tex2D.LoadImage(FileData);
+                data = File.ReadAllBytes(filePath);
+                texture = new Texture2D(2, 2);      
+                texture.LoadImage(data);
 
-                return Tex2D;                 // If data = readable -> return texture
+                return texture;                 
             }
-            return null;                     // Return null if load failed
+
+            return null;                     
         }
     }
 }
