@@ -25,13 +25,34 @@ namespace TrainsOfOurLives
         private IEnumerator PopulateSoundReplacements()
         {
             Replacements = new List<SoundReplacement>();
-            foreach (KeyValuePair<string, string> kvp in ReplacementData.CueReplacements)
+            foreach (KeyValuePair<string, string> kvp in ReplacementData.GlobalCueReplacements)
             {
-                yield return CreateReplacementDefinition(kvp.Key, kvp.Value);
+                yield return CreateGlobalReplacementDefinition(kvp.Key, kvp.Value);
+            }
+
+            foreach (KeyValuePair<CharacterSoundCueInfo, string> kvp in ReplacementData.CharacterCueReplacements)
+            {
+                yield return CreateCharacterReplacementDefinition(kvp.Key, kvp.Value);
             }
         }
 
-        private IEnumerator CreateReplacementDefinition(string cueName, string fileName)
+        private IEnumerator CreateGlobalReplacementDefinition(string cueName, string fileName)
+        {
+            CoreSoundEffectData.SoundCueDefinition definition = GetSoundCueDefinition(cueName);
+            yield return GetAudioClip(fileName, definition);
+
+            Replacements.Add(new GlobalSoundReplacement(cueName, definition));
+        }
+
+        private IEnumerator CreateCharacterReplacementDefinition(CharacterSoundCueInfo cueInfo, string fileName)
+        {
+            CoreSoundEffectData.SoundCueDefinition definition = GetSoundCueDefinition(cueInfo.sourceCueName);
+            yield return GetAudioClip(fileName, definition);
+
+            Replacements.Add(new CharacterSoundReplacement(cueInfo, definition));
+        }
+
+        private CoreSoundEffectData.SoundCueDefinition GetSoundCueDefinition(string cueName)
         {
             CoreSoundEffectData.SoundCueDefinition definition = new CoreSoundEffectData.SoundCueDefinition();
             definition.Name = cueName;
@@ -42,14 +63,18 @@ namespace TrainsOfOurLives
             definition.Loop = false;
             definition.Tags = new string[] { };
 
-            string directory = Path.Combine(Path.GetDirectoryName(Info.Location), fileName);
+            return definition;
+        }
+
+        private IEnumerator GetAudioClip(string fileName, CoreSoundEffectData.SoundCueDefinition definition)
+        {
+            string directory = Path.Combine(Path.GetDirectoryName(Info.Location), "audio");
+            directory = Path.Combine(directory, fileName);
             directory = Path.Combine("file:///", directory);
             UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(directory, AudioType.WAV);
             Logger.LogInfo(directory);
             yield return www.SendWebRequest();
             definition.Clips = new AudioClip[] { DownloadHandlerAudioClip.GetContent(www) };
-
-            Replacements.Add(new SoundReplacement(cueName, definition));
         }
     }
 
@@ -57,20 +82,20 @@ namespace TrainsOfOurLives
     [HarmonyPatch("GetSoundDefinition")]
     public static class Mod_CoreAudioSystem_GetSoundDefinition
     {
-        static void Postfix(ref CoreSoundEffectData.SoundCueDefinition __result, string cueName)
+        static void Postfix(ref CoreSoundEffectData.SoundCueDefinition __result, string cueName, CoreSoundEffectData data)
         {
-            SoundReplacement replacement = FindReplacement(cueName);
+            SoundReplacement replacement = FindReplacement(cueName, data.name);
             if (replacement != null)
             {
-                __result = replacement.replacementDefinition;
+                __result = replacement.GetReplacementSoundDefininition();
             }
         }
 
-        static SoundReplacement FindReplacement(string cueName)
+        static SoundReplacement FindReplacement(string cueName, string soundDataName)
         {
             foreach(SoundReplacement replacement in MTSitcom.Replacements)
             {
-                if (replacement.sourceCueName == cueName)
+                if (replacement.ShouldReplace(cueName, soundDataName))
                 {
                     return replacement;
                 }
