@@ -6,36 +6,36 @@
 
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>libs\0Harmony.dll</HintPath>
+      <HintPath>..\..\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>libs\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\MonsterTrain_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>libs\BepInEx.dll</HintPath>
+      <HintPath>..\..\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx.Harmony">
-      <HintPath>libs\BepInEx.Harmony.dll</HintPath>
+      <HintPath>..\..\BepInEx\core\BepInEx.Harmony.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>libs\UnityEngine.dll</HintPath>
+      <HintPath>..\..\MonsterTrain_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
-      <HintPath>libs\UnityEngine.AudioModule.dll</HintPath>
+      <HintPath>..\..\MonsterTrain_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>libs\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\MonsterTrain_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestAudioModule">
-      <HintPath>libs\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+      <HintPath>..\..\MonsterTrain_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestModule">
-      <HintPath>libs\UnityEngine.UnityWebRequestModule.dll</HintPath>
+      <HintPath>..\..\MonsterTrain_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
     </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;.\deployment\plugins\$(TargetFileName)&quot;&#xD;&#xA;xcopy &quot;.\deployment&quot; &quot;C:\Program Files (x86)\Steam\steamapps\workshop\content\1102190\MTSoap&quot; /EY&#xD;&#xA;" />
+    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;.\deployment\plugins\$(TargetFileName)&quot;&#xD;&#xA;rem xcopy &quot;.\deployment&quot; &quot;C:\Program Files (x86)\Steam\steamapps\workshop\content\1102190\MTSoap&quot; /EY&#xD;&#xA;" />
   </Target>
 
 </Project>
