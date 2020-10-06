@@ -28,3 +28,9 @@ ExportedObj/
 # mods
 Mods/*/bin
 Mods/*/libs/*.dll
+
+# Monster Train dlls
+MonsterTrain_Data/
+
+# BepInEx dlls
+BepInEx/
