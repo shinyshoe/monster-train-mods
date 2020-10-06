@@ -104,4 +104,18 @@ namespace TrainsOfOurLives
             return null;
         }
     }
+
+    [HarmonyPatch(typeof(SoundManager))]
+    [HarmonyPatch("PlayMusic")]
+    public static class Mod_SoundManager_PlayMusic
+    {
+        static void Prefix(ref string trackName)
+        {
+            // Hack Guard to skip playing Victory Music
+            if (trackName == "Spoils")
+            {
+                trackName = "MUSIC_HAX";
+            }
+        }
+    }
 }
