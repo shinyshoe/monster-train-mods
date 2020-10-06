@@ -45,27 +45,36 @@ namespace ShinyStewards
     [HarmonyPatch("Setup")]
     public static class Mod_CharacterUI_Setup
     {
+        private static CharacterOverlayImage OverlayImage;
+
         static void Postfix(ref string ___debugName, ref CharacterUIMeshBase ____characterMesh, ref CharacterState characterState)
         {
             if (___debugName.StartsWith("Character_TrainSteward"))
             {
-                GameObject faceTexture = CreateFaceObject();
-                (____characterMesh as CharacterUIMeshSpine).OrNull()?.AttachToBone(faceTexture.transform, VfxAtLoc.Location.BoneStatusEffectSlot1);
-                faceTexture.transform.localPosition += new Vector3(-.4f, -.7f);
-                faceTexture.transform.localScale = new Vector3(.35f, .35f);
+                OverlayImage = CreateFaceObject(____characterMesh.GetSortingLayer().LayerID());
+                (____characterMesh as CharacterUIMeshSpine).OrNull()?.AttachToBone(OverlayImage.transform, VfxAtLoc.Location.BoneStatusEffectSlot1);
             }
         }
 
-        private static GameObject CreateFaceObject()
+        private static CharacterOverlayImage CreateFaceObject(int sortingLayerID)
         {
-            GameObject go = new GameObject("Face");
-            SpriteRenderer spriteRenderer = go.AddComponent<SpriteRenderer>();
+            GameObject parent = new GameObject("Face");
+            GameObject child = new GameObject("Face_Image");
+            child.transform.SetParent(parent.transform);
+
+            CharacterOverlayImage overlayImage = parent.AddComponent<CharacterOverlayImage>();
+            SpriteRenderer spriteRenderer = child.AddComponent<SpriteRenderer>();
+
+            spriteRenderer.transform.localPosition += new Vector3(-.4f, -.7f, -.1f);
+            spriteRenderer.transform.localScale = new Vector3(.35f, .35f);
 
             string path = ShinyStewards.SpriteFilePaths[RandomManager.Range(0, ShinyStewards.SpriteFilePaths.Length, RngId.NonDeterministic)];
             spriteRenderer.sprite = LoadNewSprite(path);
-            spriteRenderer.sortingOrder += 1;
+            spriteRenderer.sortingLayerID = sortingLayerID;
+            spriteRenderer.sortingOrder = 1;
 
-            return go;
+            overlayImage.SetSpriteRenderer(spriteRenderer);
+            return overlayImage;
         }
 
         private static Sprite LoadNewSprite(string FilePath, float PixelsPerUnit = 100.0f)
@@ -84,13 +93,27 @@ namespace ShinyStewards
             if (File.Exists(filePath))
             {
                 data = File.ReadAllBytes(filePath);
-                texture = new Texture2D(2, 2);      
+                texture = new Texture2D(2, 2);
                 texture.LoadImage(data);
 
-                return texture;                 
+                return texture;
             }
 
-            return null;                     
+            return null;
+        }
+    }
+
+    [HarmonyPatch(typeof(CharacterUI))]
+    [HarmonyPatch("UpdateVfxSortingOrder")]
+    public static class Mod_CharacterUI_UpdateVfxSortingOrder
+    {
+        static void Postfix(ref CharacterUIMeshBase ____characterMesh, ref int ___TopAllMeshSortingOrder, ref SpriteRenderer ___spriteRenderer)
+        {
+            CharacterOverlayImage overlayImage = ___spriteRenderer.GetComponentInChildren<CharacterOverlayImage>();
+            if (overlayImage != null)
+            {
+                overlayImage.SetSortingOrder(____characterMesh.GetSortingLayer().LayerID(), ___TopAllMeshSortingOrder);
+            }
         }
     }
 }
